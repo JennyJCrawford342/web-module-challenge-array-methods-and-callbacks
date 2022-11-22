@@ -1,21 +1,34 @@
 const { fifaData } = require('./fifa.js')
 
-// ⚽️ M  V P ⚽️ //
+
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 1: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
 Practice accessing data by console.log-ing the following pieces of data note. 
 
 💡 HINT: You may want to filter the data first 😉*/
 
+const finals2014 = fifaData.filter((item) => {
+    return item.Year === 2014 && item.Stage === 'Final';
+})
+console.log(finals2014);
+
 //(a) Home Team name for 2014 world cup final
+console.log('Task 1a', finals2014[0]['Home Team Name']);
+
+
 
 //(b) Away Team name for 2014 world cup final
+console.log('Task 1b', finals2014[0]['Away Team Name']);
 
 //(c) Home Team goals for 2014 world cup final
+console.log('Task 1c', finals2014[0]['Home Team Goals']);
+
 
 //(d) Away Team goals for 2014 world cup final
+console.log('Task 1d', finals2014[0]['Away Team Goals']);
 
 //(e) Winner of 2014 world cup final */
+console.log('Task 1e', finals2014[0]['Win conditions']);
 
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 2: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 
@@ -26,10 +39,13 @@ Use getFinals to do the following:
 💡 HINT - you should be looking at the stage key inside of the objects
 */
 
-function getFinals(/* code here */) {
-    /* code here */
- }
-
+function getFinals(array) {
+    const finalsTeams = array.filter((team) => {
+        return team.Stage === 'Final';
+    });
+    return finalsTeams;
+}
+console.log(getFinals(fifaData));
 
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 3: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -38,10 +54,11 @@ Use the higher-order function called getYears to do the following:
 2. Receive a callback function as the second parameter that will take getFinals from task 2 as an argument
 3. Return an array called years containing all of the years in the getFinals data set*/
 
-function getYears(/* code here */) {
-    /* code here */
+function getYears(data, cb) {
+    return cb(data).map(item => item.Year);
+    
 }
-
+console.log(getYears(fifaData, getFinals));
 
 
 /* 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀 Task 4: 🚀🚀🚀🚀🚀🚀🚀🚀🚀🚀
@@ -52,9 +69,16 @@ Use the higher-order function getWinners to do the following:
 💡 HINT: Don't worry about ties for now (Please see the README file for info on ties for a stretch goal.)
 4. Returns the names of all winning countries in an array called `winners` */ 
 
-function getWinners(/* code here */) {
-    /* code here */
+function getWinners(data, getFinalscb) {
+return getFinalscb(data).map(item => item["Home Team Goals"] > item["Away Team Goals"] ?
+item["Home Team Name"] : item["Away Team Name"])
 }
+
+console.log(getWinners(fifaData, getFinals));
+
+
+    
+
 
 
 
@@ -69,9 +93,13 @@ Use the higher-order function getWinnersByYear to do the following:
 💡 HINT: the strings returned need to exactly match the string in step 4.
  */
 
-function getWinnersByYear(/* code here */) {
-    /* code here */
+function getWinnersByYear(data, getFinalscb, getYearscb, getWinnerscb) {
+    const winners = getWinnerscb(data, getFinalscb);
+    const years = getYearscb(data, getFinalscb);
+    return winners.map((item, index) => `In ${years[index]}, ${item} won the world cup!`)
 }
+
+console.log(getWinnersByYear(fifaData, getFinals, getYears, getWinners));
 
 
 
@@ -89,10 +117,13 @@ Use the higher order function `getAverageGoals` to do the following:
  
 */
 
-function getAverageGoals(/* code here */) {
-    /* code here */
- }
-
+function getAverageGoals(getFinalscb){
+    const averageTeamGoals = getFinalscb.reduce(function(acc, item) {
+        return acc + item["Home Team Goals"] + item["Away Team Goals"]
+    }, 0);
+    return (averageTeamGoals/getFinalscb.length).toFixed(2);
+}
+console.log(getAverageGoals(getFinals(fifaData)));
 
 
 
@@ -104,10 +135,14 @@ Create a function called `getCountryWins` that takes the parameters `data` and `
 Hint: Investigate your data to find "team initials"!
 Hint: use `.reduce` */
 
-function getCountryWins(/* code here */) {
-
-    /* code here */
-
+function getCountryWins(data, teamInitials) {
+    if(data["Home Team Goals"] > data["Away Team Goals"]) {
+        console.log(data["Home Team Initials"])
+    } else {console.log(data["Away Team Initials"])}
+    
+    const countryWins = data.reduce((acc, value)=> {
+        return 
+    }, 0)
 }
 
 
@@ -149,3 +184,11 @@ module.exports = {
     getWinnersByYear,
     getAverageGoals
 }
+
+
+
+
+
+
+
+
